@@ -91,7 +91,7 @@ QTreeView::branch:closed:has-children:!has-siblings,
 QTreeView::branch:closed:has-children:has-siblings
 {image: url(:/icon/right.png);}
 
-#next,#closeBtn,#previous  {
+#next,#pauseBtn,#previous  {
     border: 0px;
 }
 
@@ -114,7 +114,7 @@ SlideShowDlg {
     background: rgb(38, 95, 153);
 }
 
-#slidpreBtn,#slidenextBtn,#playBtn {
+#slidePreBtn,#slideNextBtn,#playBtn {
     border: 0px;
 }
 
