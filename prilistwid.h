@@ -5,6 +5,7 @@
 
 class PriListWid : public QListWidget
 {
+    Q_OBJECT
 public:
     PriListWid(QWidget *parent = nullptr);
     ~PriListWid();
@@ -17,6 +18,9 @@ private:
 public slots:
     void SlotUpPreList(QTreeWidgetItem * treeItem);
     void SlotSelectItem(QTreeWidgetItem *treeItem);
+    void SlotItemPressed(QListWidgetItem *item);
+signals:
+    void SigupSelectShow(QString path);
 };
 
 #endif // PRILISTWID_H

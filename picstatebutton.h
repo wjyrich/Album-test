@@ -29,6 +29,9 @@ private:
     QString m_hover_2;
     QString m_pressed_2;
     int m_curState;
+public slots:
+    void SlotStart();
+    void SlotStop();
 
 };
 

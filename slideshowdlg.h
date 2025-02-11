@@ -20,6 +20,10 @@ private:
     Ui::SlideShowDlg *ui;
     QTreeWidgetItem *m_firstItem;
     QTreeWidgetItem *m_lastItem;
+public slots:
+    void SlotSlideNext();
+    void SlotSlidePre();
+
 };
 
 #endif // SLIDESHOWDLG_H

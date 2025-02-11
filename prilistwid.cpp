@@ -1,6 +1,8 @@
 #include "prilistwid.h"
 
 #include <QPainter>
+#include <QGuiApplication>
+
 #include "protreeitem.h"
 #include "const.h"
 #include "prelistitem.h"
@@ -10,6 +12,7 @@ PriListWid::PriListWid(QWidget *parent):QListWidget(parent),m_global(0),m_lastIn
     this->setViewMode(QListWidget::IconMode);
     this->setIconSize(QSize(PREICON_SIZE,PREICON_SIZE));
     this->setSpacing(5);
+    connect(this,&PriListWid::itemPressed,this,&PriListWid::SlotItemPressed);
 }
 
 PriListWid::~PriListWid()
@@ -77,4 +80,15 @@ void PriListWid::SlotSelectItem(QTreeWidgetItem *treeItem)
         m_lastIndex = 17;
     }
     this->setCurrentItem(iter.value());
+}
+
+void PriListWid::SlotItemPressed(QListWidgetItem *item)
+{
+    if(QGuiApplication::mouseButtons() != Qt::LeftButton){
+        return;
+    }
+    PreListItem *listItem = dynamic_cast<PreListItem *>(item);
+    QString path = listItem->GetPath();
+    this->setCurrentItem(item);
+    emit SigupSelectShow(path);
 }

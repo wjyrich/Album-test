@@ -45,6 +45,8 @@ void PicAnimationWidget::SetPixmap(QTreeWidgetItem *item)
 
 void PicAnimationWidget::Start()
 {
+    emit SigStart();
+    emit SigStartMusic();
     m_factor = 0;
     m_timer->start(25);
     m_bStart = true;
@@ -52,6 +54,8 @@ void PicAnimationWidget::Start()
 
 void PicAnimationWidget::Stop()
 {
+   emit SigStop();
+   emit SigStopMusic();
    m_timer->stop();
    m_factor = 0;
    m_bStart = false;
@@ -97,6 +101,83 @@ void PicAnimationWidget::paintEvent(QPaintEvent *event)
      x = (w - m_pixmap2.width()) / 2;
      y = (h - m_pixmap2.height()) / 2;
      painter.drawPixmap(x, y, alphaPixmap2);
+}
+
+void PicAnimationWidget::updateSelectPixmap(QTreeWidgetItem *item)
+{
+    if(!item){
+        return;
+    }
+    ProTreeItem *treeItem = dynamic_cast<ProTreeItem *>(item);
+    QString path = treeItem->GetPath();
+    m_pixmap1.load(path);
+    m_curItem = treeItem;
+
+    if(m_mapItem.find(path) == m_mapItem.end()){
+        m_mapItem[path] = treeItem;
+    }
+    ProTreeItem *nextItem = treeItem->GetNextItem();
+    if(!nextItem)
+        return;
+    QString nextPath = treeItem->GetPath();
+    m_pixmap2.load(nextPath);
+    if(m_mapItem.find(nextPath) == m_mapItem.end()){
+        m_mapItem[path] = nextItem;
+    }
+
+}
+
+void PicAnimationWidget::SlotUpSelectShow(QString path)
+{
+    auto iter = m_mapItem.find(path);
+    if(iter == m_mapItem.end())
+        return;
+    updateSelectPixmap(iter.value());
+    update();
+}
+
+void PicAnimationWidget::SlotPlayAndStop()
+{
+    if(!m_bStart){
+        m_factor = 0;
+        m_timer->start(25);
+        m_bStart = true;
+        emit SigStartMusic();
+    }else{
+        m_timer->stop();
+        m_factor = 0;
+        update();
+        m_bStart = false;
+        emit SigStopMusic();
+
+    }
+}
+
+void PicAnimationWidget::SlideNext()
+{
+    Stop();
+    if(!m_curItem){
+        return;
+    }
+    ProTreeItem *curProItem = dynamic_cast<ProTreeItem *>(m_curItem);
+    ProTreeItem *nextItem = curProItem->GetNextItem();
+    if(!nextItem)
+        return;
+    SetPixmap(nextItem);
+    update();
+}
+
+void PicAnimationWidget::SlidePre()
+{
+    Stop();
+    if(!m_curItem)
+        return;
+    ProTreeItem *curProItem = dynamic_cast<ProTreeItem *>(m_curItem);
+    ProTreeItem *PreItem = curProItem->GetPreItem();
+    if(!PreItem)
+        return;
+    SetPixmap(PreItem);
+    update();
 }
 
 void PicAnimationWidget::TimeOut()
